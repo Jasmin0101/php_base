@@ -54,8 +54,7 @@ class HelloServiceTest extends TestCase
         return [
             'Один' => ['1'],
             'Два' => ['2'],
-            'Три' => ['3'],
-        
+            'Три' => ['3'],   
         ];
     }
 }

@@ -3,28 +3,39 @@
 {% block title %}Deal Logs for Stock {{ stock.name }}{% endblock %}
 
 {% block body %}
-{%set timestamps = []%}
-{% set prices = []%}
-  <div> 
-        {% for deal_log in deal_logs %}
-            <div>
-                <h1>timestamp: {{ deal_log.timestamp|date("d-m-Y H:i:s") }}, price: {{ deal_log.price }}</h1>
-            </div>
-            {% set timestamps = timestamps|merge([deal_log.timestamp|date("d-m-Y H:i:s")])%}
-            {% set prices = prices|merge([deal_log.price])%}
-         
-        {% endfor %}
-    </div>
+{% set timestamps = [] %}
+{% set prices = [] %}
+<div> 
+    {% for deal_log in deal_logs %}
+  
+        {% set timestamps = timestamps|merge([deal_log.timestamp|date("Y-m-d H:i:s")]) %}
+        {% set prices = prices|merge([deal_log.price]) %}
+    {% endfor %}
+</div>
+
+
+
+<div style="margin: 1em 0;">
+    <button onclick="setTimeframe('day')" class="btn btn-primary">Day</button>
+    <button onclick="setTimeframe('week')" class="btn btn-secondary">Week</button>
+    <button onclick="setTimeframe('month')" class="btn btn-success">Month</button>
+    <button onclick="setTimeframe('all')" class="btn btn-outline-dark">All</button>
+</div>
 
 <div>
-  <canvas id="myChart"></canvas>
+    <canvas id="myChart"></canvas>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src={{ asset('js/myChart.js') }}></script>
+<script src="{{ asset('js/myChart.js') }}"></script>
 <script>
-  const ctx = document.getElementById('myChart');
+    const ctx = document.getElementById('myChart');
+    const labels = {{ timestamps|json_encode|raw }};
+    const prices = {{ prices|json_encode|raw }};
 
-  renderChart(ctx, {{ timestamps|json_encode|raw }}, {{ prices|json_encode|raw }},"Stocks price change");
+  renderChart(ctx, labels, prices, "Stocks price change");
+
+    window.originalLabels = labels;
+    window.originalData = prices;
 </script>
 {% endblock %}
