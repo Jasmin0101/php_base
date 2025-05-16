@@ -4,33 +4,34 @@ namespace App\Tests\Fixture;
 
 use App\Entity\Portfolio;
 use App\Entity\User;
-use App\Enums\ActionEnum;
-use App\Tests\Fixture\UserFixture;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
 class PortfolioFixture extends AbstractFixture implements DependentFixtureInterface
 {
-
-    /**
-     * @inheritDoc
-     */
+    public const PORTFOLIO_ADMIN_REFERENCE = 'portfolio-admin';
+    public const PORTFOLIO_USER_REFERENCE = 'portfolio-user';
     public function load(ObjectManager $manager): void
     {
-        // TODO: Implement load() method.
         $adminPortfolio = new Portfolio();
         $adminPortfolio->setBalance(100);
-        $adminPortfolio -> setFreezeBalance(0);
-        $adminPortfolio -> setUser($this->getReference('user-admin', User::class));
+        $adminPortfolio->setFreezeBalance(0);
+        $adminPortfolio->setUser($this->getReference(UserFixture::USER_ADMIN_REFERENCE, User::class));
 
-        $manager -> persist($adminPortfolio);
-        $manager -> flush();
+        $manager->persist($adminPortfolio);
 
-        $this->addReference('portfolio-admin', $adminPortfolio);
+        $this->addReference(self::PORTFOLIO_ADMIN_REFERENCE, $adminPortfolio);
 
+        $userPortfolio = new Portfolio();
+        $userPortfolio->setBalance(100);
+        $userPortfolio->setFreezeBalance(0);
+        $userPortfolio->setUser($this->getReference(UserFixture::USER_USER_REFERENCE, User::class));
+        $manager->persist($userPortfolio);
 
-        
+        $this->addReference(self::PORTFOLIO_USER_REFERENCE, $userPortfolio);
+
+        $manager->flush();
     }
 
     public function getDependencies(): array
