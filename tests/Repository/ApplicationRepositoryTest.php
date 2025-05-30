@@ -25,7 +25,9 @@ class ApplicationRepositoryTest extends KernelTestCase
     private PortfolioFixture $portfolioFixture;
     private ApplicationFixture $applicationFixture;
 
+    private ORMExecutor $executor;
     private ApplicationRepository $applicationRepository;
+
     protected function setUp(): void
     {
         $kernel = self::bootKernel();
@@ -40,10 +42,15 @@ class ApplicationRepositoryTest extends KernelTestCase
         $loader->addFixture($this->portfolioFixture = new PortfolioFixture());
         $loader->addFixture($this->applicationFixture = new ApplicationFixture());
 
-        $executor = new ORMExecutor($em, new ORMPurger());
-        $executor->execute($loader->getFixtures());
+        $this->executor = new ORMExecutor($em, new ORMPurger());
+        $this->executor->execute($loader->getFixtures());
 
         $this->applicationRepository = $em->getRepository(Application::class);
+    }
+
+   protected function tearDown(): void
+    {
+        $this -> executor -> getPurger()->purge();
     }
 
     public function testFindAppropriate(): void

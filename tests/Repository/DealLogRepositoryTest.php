@@ -20,6 +20,7 @@ class DealLogRepositoryTest extends KernelTestCase
     private PortfolioFixture $portfolioFixture;
     private DealLogFixture $dealLogFixture;
 
+    private ORMExecutor $executor;
     private DealLogRepository $dealLogRepository;
 
     protected function setUp(): void
@@ -35,9 +36,15 @@ class DealLogRepositoryTest extends KernelTestCase
         $loader->addFixture($this->portfolioFixture = new PortfolioFixture());
         $loader->addFixture($this->dealLogFixture = new DealLogFixture());
 
-        (new ORMExecutor($em, new ORMPurger()))->execute($loader->getFixtures());
+        $this->executor = new ORMExecutor($em, new ORMPurger());
+        $this->executor->execute($loader->getFixtures());
+
 
         $this->dealLogRepository = $em->getRepository(DealLog::class);
+    }
+    protected function tearDown(): void
+    {
+        $this -> executor -> getPurger()->purge();
     }
 
     public function testFindByStock(): void

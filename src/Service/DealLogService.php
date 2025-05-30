@@ -8,6 +8,8 @@ use App\Enums\ActionEnum;
 use App\Repository\DealLogRepository;
 use App\Entity\Depositary;
 
+#Дельта показывает, сколько бы вы заработали (или потеряли),
+# если бы прямо сейчас продали все оставшиеся акции по последней цене сделки.
 class DealLogService
 {
     public function __construct(
@@ -36,18 +38,22 @@ class DealLogService
 
     public function calculateDelta(Depositary $depositary):int{
         
+        # Достаем проданные 
         $sellDealLogs = $depositary->getPortfolio()->getSellDealLogs() -> filter(
             function (DealLog $sellDealLog) use ($depositary) {
                 return $depositary->getStock()-> getId() === $sellDealLog->getStock()->getId();
             }
         );
-
+        # Достаем купленные 
         $buyDealLogs = $depositary->getPortfolio()->getBuyDealLogs() -> filter(
             function (DealLog $buyDealLog) use ($depositary) {
                 return $depositary->getStock()-> getId() === $buyDealLog->getStock()->getId();
             }
         );
+
+        # Достаем последнюю
         $latestDealLog = $this->dealLogRepository->findLatestByStock($depositary->getStock());
+
 
         $investSum = 0.0;
         $actualQuantity = 0;
