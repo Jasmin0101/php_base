@@ -93,7 +93,7 @@ class FreezeServiceTest extends TestCase
         $depositary->expects($this->once())->method('subFreezeQuantity')->with($oldQuantity)->willReturnSelf();
         $depositary->expects($this->once())->method('addFreezeQuantity')->with($newQuantity);
 
-        $this->freezeService->updateFreezeByApplication($application, $oldQuantity, 100.0);
+        $this->freezeService->updateFreezeByApplication($application, $oldQuantity, $newQuantity);
     }
 
     public static function provideUpdateSellCases(): array
@@ -145,7 +145,7 @@ class FreezeServiceTest extends TestCase
         $depositary = $this->createMock(Depositary::class);
         $portfolio = $this->createMock(Portfolio::class);
         $application = $this->createMock(Application::class);
-
+    // Trait 
         $application->method('getAction')->willReturn(ActionEnum::SELL);
         $application->method('getStock')->willReturn($stock);
         $application->method('getQuantity')->willReturn($quantity);

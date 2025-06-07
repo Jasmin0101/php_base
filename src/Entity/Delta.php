@@ -23,7 +23,7 @@ class Delta
     public function __toString(): string
     {
         return sprintf(
-            '%+.2f ₽ (%+.2f%%)',
+            '%+.2f  coin (%+.2f%%)',
             $this->absolute,
             $this->percentage
         );

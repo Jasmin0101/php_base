@@ -38,6 +38,7 @@ class DealLogService
     }
 
    public function calculateDelta(Depositary $depositary): Delta
+   
 {
     $sellDealLogs = $depositary->getPortfolio()->getSellDealLogs()->filter(
         fn(DealLog $sellDealLog) => $depositary->getStock()->getId() === $sellDealLog->getStock()->getId()
@@ -64,7 +65,13 @@ class DealLogService
 
     $actualSum = $actualQuantity * ($latestDealLog?->getPrice() ?? 0.0);
     $deltaAbsolute = $actualSum - $investSum;
+// Вложил: 1000 
 
+// Сейчас стоит: 1200 
+
+// Разница: +200 
+
+// Процент: (200 / 1000) × 100 = 20%
     $deltaPercent = $investSum !== 0.0 ? ($deltaAbsolute / abs($investSum)) * 100 : 0.0;
 
     return new Delta($deltaAbsolute, $deltaPercent);

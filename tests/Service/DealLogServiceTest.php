@@ -9,6 +9,7 @@ use App\Entity\Stock;
 use App\Enums\ActionEnum;
 use App\Entity\Depositary;
 use App\Repository\DealLogRepository;
+use App\Entity\Delta;
 use App\Service\DealLogService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -79,8 +80,7 @@ class DealLogServiceTest extends TestCase
     float $expectedAbsolute,
     float $expectedPercent
     ): void {
-        $buyApplication = $this->createMock(Application::class);
-        $sellApplication = $this->createMock(Application::class);
+     
 
         $depositary = $this->createMock(Depositary::class);
         $portfolio = $this->createMock(Portfolio::class);
@@ -91,7 +91,7 @@ class DealLogServiceTest extends TestCase
         $depositary->method('getStock')->willReturn($stock);
 
         
-    $buyDealLog = $this->createConfiguredMock(DealLog::class, [
+    $buyDealLog = $this->createConfiguredMock(DealLog::class, [ 
         'getStock' => $stock,
         'getPrice' => $buyPrice,
         'getQuantity' => $buyQuantity,
@@ -107,11 +107,11 @@ class DealLogServiceTest extends TestCase
         'getPrice' => $latestPrice
     ]);
 
-        $buyDealLogs = new ArrayCollection([$buyDealLog]);
-        $sellDealLogs = new ArrayCollection([$sellDealLog]);
+    $buyDealLogs = new ArrayCollection([$buyDealLog]);
+    $sellDealLogs = new ArrayCollection([$sellDealLog]);
 
-        $portfolio->method('getBuyDealLogs')->willReturn($buyDealLogs);
-        $portfolio->method('getSellDealLogs')->willReturn($sellDealLogs);
+    $portfolio->method('getBuyDealLogs')->willReturn($buyDealLogs);
+    $portfolio->method('getSellDealLogs')->willReturn($sellDealLogs);
 
         $this->dealLogRepository
             ->method('findLatestByStock')
@@ -121,9 +121,9 @@ class DealLogServiceTest extends TestCase
         $delta = $this->dealLogService->calculateDelta($depositary);
 
         $this->assertEquals($expectedAbsolute, $delta->getAbsolute());
-        $this->assertEquals($expectedPercent, $delta->getPercentage());
+        $this->assertEquals($expectedPercent, round($delta->getPercentage(), 2));
 
-    $this->assertInstanceOf(\App\Entity\Delta::class, $delta);
+    $this->assertInstanceOf(Delta::class, $delta);
     $this->assertEqualsWithDelta($expectedAbsolute, $delta->getAbsolute(), 0.01);
     $this->assertEqualsWithDelta($expectedPercent, $delta->getPercentage(), 0.01); //Проверяет равенство с погрешностью
 
