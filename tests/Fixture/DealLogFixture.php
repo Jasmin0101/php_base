@@ -21,6 +21,7 @@ class DealLogFixture extends AbstractFixture implements DependentFixtureInterfac
             ->setPrice(1)
             ->setQuantity(1)
             ->setTimestamp(new \DateTimeImmutable('2025-01-01 00:00:00'))
+            //getReference берёт ссылку на объект, который был создан и зарегистрирован в другой фикстуре (в PortfolioFixture).
             ->setBuyPortfolio(
                 $this->getReference(PortfolioFixture::PORTFOLIO_USER_REFERENCE, Portfolio::class)
             )
@@ -33,7 +34,9 @@ class DealLogFixture extends AbstractFixture implements DependentFixtureInterfac
         ;
 
         $manager->persist($olderDealLog);
+        //Добавляет объект в внутренний реестр фикстур под ключом (например, 'older-deal-log').
 
+        //Позволяет другим фикстурам или тестам использовать эти ссылки через getReference.
         $this->addReference(self::OLDER_DEAL_LOG, $olderDealLog);
 
         $newerDealLog = new DealLog();
