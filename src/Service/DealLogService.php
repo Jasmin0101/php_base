@@ -7,6 +7,7 @@ use App\Entity\DealLog;
 use App\Enums\ActionEnum;
 use App\Repository\DealLogRepository;
 use App\Entity\Depositary;
+use App\Entity\Delta;
 
 #Дельта показывает, сколько бы вы заработали (или потеряли),
 # если бы прямо сейчас продали все оставшиеся акции по последней цене сделки.
@@ -36,45 +37,44 @@ class DealLogService
         return $dealLog;
     }
 
-    public function calculateDelta(Depositary $depositary):int{
-        
-        # Достаем проданные 
-        $sellDealLogs = $depositary->getPortfolio()->getSellDealLogs() -> filter(
-            function (DealLog $sellDealLog) use ($depositary) {
-                return $depositary->getStock()-> getId() === $sellDealLog->getStock()->getId();
-            }
-        );
-        # Достаем купленные 
-        $buyDealLogs = $depositary->getPortfolio()->getBuyDealLogs() -> filter(
-            function (DealLog $buyDealLog) use ($depositary) {
-                return $depositary->getStock()-> getId() === $buyDealLog->getStock()->getId();
-            }
-        );
+   public function calculateDelta(Depositary $depositary): Delta
+   
+{
+    $sellDealLogs = $depositary->getPortfolio()->getSellDealLogs()->filter(
+        fn(DealLog $sellDealLog) => $depositary->getStock()->getId() === $sellDealLog->getStock()->getId()
+    );
 
-        # Достаем последнюю
-        $latestDealLog = $this->dealLogRepository->findLatestByStock($depositary->getStock());
+    $buyDealLogs = $depositary->getPortfolio()->getBuyDealLogs()->filter(
+        fn(DealLog $buyDealLog) => $depositary->getStock()->getId() === $buyDealLog->getStock()->getId()
+    );
 
+    $latestDealLog = $this->dealLogRepository->findLatestByStock($depositary->getStock());
 
-        $investSum = 0.0;
-        $actualQuantity = 0;
+    $investSum = 0.0;
+    $actualQuantity = 0;
 
-        foreach($sellDealLogs as $sellDealLog){
-            $investSum += $sellDealLog->getPrice() * $sellDealLog->getQuantity();
-            $actualQuantity -= $sellDealLog->getQuantity();
-        }
-
-        foreach($buyDealLogs as $buyDealLog){
-            $investSum -= $buyDealLog->getPrice() * $buyDealLog->getQuantity();
-            $actualQuantity += $buyDealLog->getQuantity();
-        }
-
-
-        $actualSum = $actualQuantity *($latestDealLog->getPrice()??0.0);
-
-        return $actualSum - $investSum; // delta
-
-    
+    foreach ($sellDealLogs as $sellDealLog) {
+        $investSum -= $sellDealLog->getPrice() * $sellDealLog->getQuantity();
+        $actualQuantity -= $sellDealLog->getQuantity();
     }
 
+    foreach ($buyDealLogs as $buyDealLog) {
+        $investSum += $buyDealLog->getPrice() * $buyDealLog->getQuantity();
+        $actualQuantity += $buyDealLog->getQuantity();
+    }
+
+    $actualSum = $actualQuantity * ($latestDealLog?->getPrice() ?? 0.0);
+    $deltaAbsolute = $actualSum - $investSum;
+// Вложил: 1000 
+
+// Сейчас стоит: 1200 
+
+// Разница: +200 
+
+// Процент: (200 / 1000) × 100 = 20%
+    $deltaPercent = $investSum !== 0.0 ? ($deltaAbsolute / abs($investSum)) * 100 : 0.0;
+
+    return new Delta($deltaAbsolute, $deltaPercent);
+}
 
 }

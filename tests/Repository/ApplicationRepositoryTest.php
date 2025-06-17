@@ -30,9 +30,11 @@ class ApplicationRepositoryTest extends KernelTestCase
 
     protected function setUp(): void
     {
+        //Загружает ядро Symfony в тестовом окружении. Это позволяет использовать сервисы, репозитории и другие компоненты приложения.
         $kernel = self::bootKernel();
 
         $this->assertSame('test', $kernel->getEnvironment());
+        
         $em = $kernel->getContainer()->get('doctrine.orm.entity_manager');
         $this->assertInstanceOf(EntityManager::class, $em);
 
@@ -42,6 +44,7 @@ class ApplicationRepositoryTest extends KernelTestCase
         $loader->addFixture($this->portfolioFixture = new PortfolioFixture());
         $loader->addFixture($this->applicationFixture = new ApplicationFixture());
 
+        //Отвечает за выполнение этих фикстур — т.е. добавление сущностей в БД. / Очищает базу данных перед выполнением (чтобы каждый тест работал в чистой среде).
         $this->executor = new ORMExecutor($em, new ORMPurger());
         $this->executor->execute($loader->getFixtures());
 

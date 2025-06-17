@@ -42,10 +42,13 @@ class DealLogRepositoryTest extends KernelTestCase
 
         $this->dealLogRepository = $em->getRepository(DealLog::class);
     }
+
+
     protected function tearDown(): void
     {
         $this -> executor -> getPurger()->purge();
     }
+    
 
     public function testFindByStock(): void
     {

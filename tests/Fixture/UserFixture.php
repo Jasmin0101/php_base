@@ -14,7 +14,9 @@ class UserFixture extends AbstractFixture
     {
         $userAdmin = new User();
         $userAdmin->setUsername('admin');
-        $userAdmin->setPassword('admin_password'); # +0.5 балла за использование PasswordHasher
+        //PASSWORD_BCRYPT — это константа в PHP, используемая для указания алгоритма хеширования при вызове функции password_hash()
+        $hashedPassword = password_hash('admin_password', PASSWORD_BCRYPT); 
+        $userAdmin->setPassword($hashedPassword); # +0.5 балла за использование PasswordHasher
         $userAdmin->setRoles(['ROLE_ADMIN']);
 
         $manager->persist($userAdmin);
@@ -23,7 +25,8 @@ class UserFixture extends AbstractFixture
 
         $user = new User();
         $user->setUsername('user');
-        $user->setPassword('user_password');
+        $hashedPassword = password_hash('user_password', PASSWORD_BCRYPT);
+        $user->setPassword($hashedPassword); 
 
         $manager->persist($user);
         $manager->flush();

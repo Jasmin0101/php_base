@@ -18,7 +18,7 @@ class DepositaryRepository extends ServiceEntityRepository
 
     public function removeDepositary(Depositary $depositary): void
     {
-        $this->getEntityManager()->remove($depositary);
+        // $this->getEntityManager()->remove($depositary);
         $this->getEntityManager()->flush();
     }
 }
