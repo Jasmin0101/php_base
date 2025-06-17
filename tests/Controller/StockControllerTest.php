@@ -29,8 +29,7 @@ class StockControllerTest extends WebTestCase
 
         $loader = new Loader();
         $loader->addFixture(new UserFixture());
-        $loader->addFixture(new StockFixture());
-
+        $loader -> addFixture(new StockFixture());
         $this->executor = new ORMExecutor($em, new ORMPurger());
         $this->executor->execute($loader->getFixtures());
 
@@ -43,7 +42,8 @@ class StockControllerTest extends WebTestCase
     }
 
     protected function tearDown(): void
-    {
+    { 
+        parent::tearDown();
         $this->executor->getPurger()->purge();
     }
 
@@ -125,34 +125,32 @@ public function testEditWithoutValidForm(): void
 
 //    public function testDeleteStock(): void
 // {
-
-
-//     $this->client->request('GET', '/');
+//     // Стартуем сессию вручную
+//     $session = $this->client->getContainer()->get('session.factory')->createSession();
+//     $session->start();
+//     $this->client->getContainer()->set('session', $session);
 
 //     /** @var Stock $stock */
 //     $stock = $this->executor->getReferenceRepository()->getReference(StockFixture::STOCK_TEST_REFERENCE);
 
+//     // После старта сессии теперь можно корректно создать CSRF-токен
 //     $csrfToken = $this->client->getContainer()
-//         ->get('test.service_container')
 //         ->get('security.csrf.token_manager')
 //         ->getToken('delete' . $stock->getId())
 //         ->getValue();
 
+//     // Делаем сам запрос на удаление
 //     $this->client->request('POST', '/stock/' . $stock->getId(), [
 //         '_token' => $csrfToken,
 //     ]);
 
 //     $this->assertResponseRedirects('/stock');
-
 //     $this->client->followRedirect();
 //     $this->assertResponseIsSuccessful();
 
-//     /** @var EntityManagerInterface $em */
 //     $em = $this->client->getContainer()->get('doctrine.orm.entity_manager');
-
 //     $deletedStock = $em->getRepository(Stock::class)->find($stock->getId());
 //     $this->assertNull($deletedStock);
 // }
-
 
 }

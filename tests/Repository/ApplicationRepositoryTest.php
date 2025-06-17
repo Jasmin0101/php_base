@@ -34,6 +34,7 @@ class ApplicationRepositoryTest extends KernelTestCase
         $kernel = self::bootKernel();
 
         $this->assertSame('test', $kernel->getEnvironment());
+        
         $em = $kernel->getContainer()->get('doctrine.orm.entity_manager');
         $this->assertInstanceOf(EntityManager::class, $em);
 

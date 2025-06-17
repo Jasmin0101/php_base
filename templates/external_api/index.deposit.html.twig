@@ -1,19 +1,57 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Deposit!{% endblock %}
+{% block title %}Депозиты{% endblock %}
 
 {% block body %}
 <style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    body {
+        background-color: #f4f6f9;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .container {
+        max-width: 1000px;
+        margin: 2em auto;
+        padding: 2em;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .deposit-card {
+        padding: 1.5em;
+        margin-bottom: 1em;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        background-color: #fafafa;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .deposit-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    .deposit-title {
+        font-weight: 600;
+        font-size: 1.2em;
+        margin-bottom: 0.5em;
+        color: #333;
+    }
+    .deposit-info {
+        font-size: 1em;
+        color: #555;
+    }
 </style>
 
-<div class="example-wrapper">
-{% for deposit in deposits %}
-<span>
-   Вклад {{deposit.description}} имеет {{deposit.rate}}, которую можно было зафиксировать  {{deposit.monthPublication}}
-</span>
-{% endfor %}
+<div class="container">
+    <h1>Ставки по вкладам</h1>
 
+    {% for deposit in deposits %}
+        <div class="deposit-card">
+            <div class="deposit-title">{{ deposit.description }}</div>
+            <div class="deposit-info">
+                Ставка: <strong>{{ deposit.rate }}%</strong><br>
+            </div>
+        </div>
+    {% else %}
+        <p>Данные по вкладам недоступны.</p>
+    {% endfor %}
 </div>
 {% endblock %}

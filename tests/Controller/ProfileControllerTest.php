@@ -60,6 +60,7 @@ class ProfileControllerTest extends WebTestCase
 
         $adminPortfolio = $this->portfolioFixture->getReference(PortfolioFixture::PORTFOLIO_ADMIN_REFERENCE, Portfolio::class);
         $this->assertSelectorTextSame('span', "Portfolio {$adminPortfolio->getId()} has {$adminPortfolio->getBalance()} money and has stocks:");
+        
         $this->assertAnySelectorTextContains('h1', "quantity");
     }
 }

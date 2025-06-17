@@ -45,7 +45,8 @@ class UserRepositoryTest extends KernelTestCase
         $user = $this->executor->getReferenceRepository()->getReference(UserFixture::USER_USER_REFERENCE);
         $this->assertInstanceOf(User::class, $user);
         
-        $newPassword = 'new_password';
+        $newPassword  = password_hash('new_password', PASSWORD_BCRYPT);
+
 
         $this->userRepository->upgradePassword($user, $newPassword);
 

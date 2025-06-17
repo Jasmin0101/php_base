@@ -37,7 +37,6 @@ class RegistrationControllerTest extends WebTestCase
         $this->executor = new ORMExecutor($this->em, new ORMPurger());
         $this->executor->execute($loader->getFixtures());
 
-        // Логинимся под админом (если нужно)
         $userRepository = $this->client->getContainer()->get(UserRepository::class);
         $userAdmin = $userRepository->findOneBy(['username' => 'admin']);
         $this->client->loginUser($userAdmin);

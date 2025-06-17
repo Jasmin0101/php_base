@@ -18,6 +18,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
+
 class ApplicationControllerTest extends WebTestCase
 {
     private KernelBrowser $client;
@@ -51,18 +52,19 @@ class ApplicationControllerTest extends WebTestCase
 
     protected function tearDown(): void
     {
+        parent::tearDown();
         $this->executor->getPurger()->purge();
     }
 
     public function testIndex(): void
-    {
+    {       
         $this->client->request('GET', '/application');
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('table'); 
     }
 
     public function testGlass(): void
-    {
+    {  
         /** @var Stock $stock */
         $stock = $this->executor->getReferenceRepository()->getReference(StockFixture::STOCK_TEST_REFERENCE);
 

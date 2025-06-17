@@ -50,7 +50,7 @@ class DepositaryRepositoryTest extends KernelTestCase
 
     $this->depositaryRepository->removeDepositary($depositary);
 
-    $removedDepositary = $this->depositaryRepository->find($id); // ⬅️ Используем сохранённый ID
+    $removedDepositary = $this->depositaryRepository->find($id); 
     $this->assertNull($removedDepositary, 'The depositary should be removed from the database.');
     
 }
